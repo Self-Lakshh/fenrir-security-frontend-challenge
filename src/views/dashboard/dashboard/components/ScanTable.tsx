@@ -14,8 +14,8 @@ const ScanTable = ({ scans }: ScanTableProps) => {
   return (
     <div className="bg-card border border-border rounded-xl overflow-hidden">
       {/* Toolbar */}
-      <div className="px-4 sm:px-6 py-4 sm:py-5 flex items-center justify-between gap-4">
-        <div className="relative w-[280px] sm:w-[340px] md:w-[420px]">
+      <div className="px-4 sm:px-6 py-4 sm:py-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+        <div className="relative w-full sm:w-[280px] md:w-[340px] lg:w-[420px]">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
           <input
             placeholder="Search scans by name or type..."

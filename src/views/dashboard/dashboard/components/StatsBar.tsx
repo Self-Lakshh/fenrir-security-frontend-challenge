@@ -28,7 +28,7 @@ const StatsBar = ({ stats }: StatsBarProps) => {
     <div className="w-full bg-card border-b border-border">
 
       {/* Meta row */}
-      <div className="flex items-center justify-between px-4 sm:px-6 py-3 sm:py-4 text-sm text-muted-foreground">
+      <div className="grid grid-cols-2 lg:flex lg:items-center lg:justify-between px-4 sm:px-6 py-3 sm:py-4 text-sm text-muted-foreground gap-x-4 gap-y-3">
         <InfoItem label="Org" value="Project X" />
         <Divider />
         <InfoItem label="Owner" value="Nammagiri" />
