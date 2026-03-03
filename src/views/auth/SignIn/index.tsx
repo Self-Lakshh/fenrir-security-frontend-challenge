@@ -6,8 +6,8 @@ import SocialButton from '../components/SocialButton'
 import { authService } from '@/mock/services/authService'
 
 const SignIn = () => {
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
+  const [email, setEmail] = useState('test@example.com')
+  const [password, setPassword] = useState('password123')
   const [showPassword, setShowPassword] = useState(false)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -23,11 +23,9 @@ const SignIn = () => {
 
     try {
       const result = await authService.login(email, password)
-
       if (result.success) {
-        login(result.user ? { firstName: result.user.firstName, lastName: result.user.lastName, email: result.user.email } : undefined)
-        const from = location.state?.from?.pathname || '/dashboard'
-        navigate(from, { replace: true })
+        login()
+        navigate(location.state?.from?.pathname || '/dashboard', { replace: true })
       } else {
         setError(result.message)
       }
@@ -44,11 +42,9 @@ const SignIn = () => {
       <div>
         <div className="text-center mb-6">
           <h2 className="text-2xl font-bold mb-1">Sign In</h2>
-          <p className="text-sm text-gray-500">
-            Don’t have an account?{' '}
-            <Link to="/sign-up" className="text-primary hover:underline">
-              Sign up
-            </Link>
+          <p className="text-sm text-muted-foreground">
+            Don&apos;t have an account?{' '}
+            <Link to="/sign-up" className="text-primary hover:underline">Sign up</Link>
           </p>
         </div>
 
@@ -60,7 +56,6 @@ const SignIn = () => {
         )}
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-
           <input
             type="email"
             placeholder="Email address*"
@@ -68,7 +63,7 @@ const SignIn = () => {
             onChange={(e) => setEmail(e.target.value)}
             required
             disabled={loading}
-            className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:ring-2 focus:ring-primary/20"
+            className="w-full px-4 py-3 rounded-lg border border-border focus:outline-none focus:ring-2 focus:ring-primary/20"
           />
 
           <div className="relative">
@@ -79,12 +74,12 @@ const SignIn = () => {
               onChange={(e) => setPassword(e.target.value)}
               required
               disabled={loading}
-              className="w-full px-4 py-3 pr-10 rounded-lg border border-gray-200 focus:ring-2 focus:ring-primary/20"
+              className="w-full px-4 py-3 pr-10 rounded-lg border border-border focus:outline-none focus:ring-2 focus:ring-primary/20"
             />
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground"
             >
               {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
             </button>
@@ -93,18 +88,15 @@ const SignIn = () => {
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-3 bg-primary text-white font-semibold rounded-full flex items-center justify-center gap-2"
+            className="w-full py-3 bg-primary text-primary-foreground font-semibold rounded-full flex items-center justify-center gap-2"
           >
             {loading ? (
               <>
                 <Loader2 size={18} className="animate-spin" />
                 Signing in...
               </>
-            ) : (
-              'Log in'
-            )}
+            ) : 'Log in'}
           </button>
-
         </form>
       </div>
 

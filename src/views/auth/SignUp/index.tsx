@@ -28,17 +28,12 @@ const SignUp = () => {
     setLoading(true)
 
     try {
-      const result = await authService.register({
-        firstName,
-        lastName,
-        email,
-        password
-      })
+      const result = await authService.register({ firstName, lastName, email, password, position: 'Security Analyst' })
 
       if (result.success) {
         setSuccess(result.message)
         setTimeout(() => {
-          login(result.user ? { firstName: result.user.firstName, lastName: result.user.lastName, email: result.user.email } : undefined)
+          login()
           navigate('/dashboard', { replace: true })
         }, 1200)
       } else {
@@ -51,17 +46,18 @@ const SignUp = () => {
     }
   }
 
+  const inputClass = 'w-full px-4 py-3 rounded-lg border border-border focus:outline-none focus:ring-2 focus:ring-primary/20'
+  const isDisabled = loading || !!success
+
   return (
     <div className="w-full rounded-[24px] bg-white shadow-xl px-8 py-8 flex flex-col justify-between">
 
       <div>
         <div className="text-center mb-6">
           <h2 className="text-2xl font-bold mb-1">Sign Up</h2>
-          <p className="text-sm text-gray-500">
+          <p className="text-sm text-muted-foreground">
             Already have an account?{' '}
-            <Link to="/sign-in" className="text-primary hover:underline">
-              Log in
-            </Link>
+            <Link to="/sign-in" className="text-primary hover:underline">Log in</Link>
           </p>
         </div>
 
@@ -80,36 +76,9 @@ const SignUp = () => {
         )}
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-3">
-
-          <input
-            type="text"
-            placeholder="First name*"
-            value={firstName}
-            onChange={(e) => setFirstName(e.target.value)}
-            required
-            disabled={loading || !!success}
-            className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:ring-2 focus:ring-primary/20"
-          />
-
-          <input
-            type="text"
-            placeholder="Last name*"
-            value={lastName}
-            onChange={(e) => setLastName(e.target.value)}
-            required
-            disabled={loading || !!success}
-            className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:ring-2 focus:ring-primary/20"
-          />
-
-          <input
-            type="email"
-            placeholder="Email address*"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-            disabled={loading || !!success}
-            className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:ring-2 focus:ring-primary/20"
-          />
+          <input type="text" placeholder="First name*" value={firstName} onChange={(e) => setFirstName(e.target.value)} required disabled={isDisabled} className={inputClass} />
+          <input type="text" placeholder="Last name*" value={lastName} onChange={(e) => setLastName(e.target.value)} required disabled={isDisabled} className={inputClass} />
+          <input type="email" placeholder="Email address*" value={email} onChange={(e) => setEmail(e.target.value)} required disabled={isDisabled} className={inputClass} />
 
           <div className="relative">
             <input
@@ -118,45 +87,35 @@ const SignUp = () => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
-              disabled={loading || !!success}
-              className="w-full px-4 py-3 pr-10 rounded-lg border border-gray-200 focus:ring-2 focus:ring-primary/20"
+              disabled={isDisabled}
+              className={`${inputClass} pr-10`}
             />
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground"
             >
               {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
             </button>
           </div>
 
-          <label className="flex items-start gap-2 text-xs text-gray-500">
-            <input
-              type="checkbox"
-              checked={agreed}
-              onChange={(e) => setAgreed(e.target.checked)}
-              required
-            />
-            I agree to Terms & Conditions and Privacy Policy
+          <label className="flex items-start gap-2 text-xs text-muted-foreground">
+            <input type="checkbox" checked={agreed} onChange={(e) => setAgreed(e.target.checked)} required />
+            I agree to Terms &amp; Conditions and Privacy Policy
           </label>
 
           <button
             type="submit"
             disabled={loading || !agreed || !!success}
-            className="w-full py-3 bg-primary text-white font-semibold rounded-full flex items-center justify-center gap-2"
+            className="w-full py-3 bg-primary text-primary-foreground font-semibold rounded-full flex items-center justify-center gap-2"
           >
             {loading ? (
               <>
                 <Loader2 size={18} className="animate-spin" />
                 Creating account...
               </>
-            ) : success ? (
-              'Redirecting...'
-            ) : (
-              'Create account'
-            )}
+            ) : success ? 'Redirecting...' : 'Create account'}
           </button>
-
         </form>
       </div>
 

@@ -13,17 +13,10 @@ import AuthLayout from '@/components/layouts/AuthLayout/index'
 import PostLoginLayout from '@/components/layouts/PostLoginLayout/index'
 import { ThemeProvider } from '@/components/theme'
 
-// --- Mock Auth Context Setup ---
-type AuthUser = {
-  firstName: string
-  lastName: string
-  email: string
-}
-
+// Mock auth context
 type AuthContextType = {
   isAuthenticated: boolean
-  user: AuthUser | null
-  login: (user?: AuthUser) => void
+  login: () => void
   logout: () => void
 }
 
@@ -36,40 +29,29 @@ export const useAuth = () => {
 }
 
 const AuthProvider = ({ children }: { children: React.ReactNode }) => {
+  // Session persistence
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => {
     return localStorage.getItem('mock_auth') === 'true'
   })
 
-  const [user, setUser] = useState<AuthUser | null>(() => {
-    const stored = localStorage.getItem('mock_user')
-    return stored ? JSON.parse(stored) : null
-  })
-
-  const login = (userData?: AuthUser) => {
+  const login = () => {
     setIsAuthenticated(true)
     localStorage.setItem('mock_auth', 'true')
-    if (userData) {
-      setUser(userData)
-      localStorage.setItem('mock_user', JSON.stringify(userData))
-    }
   }
 
   const logout = () => {
     setIsAuthenticated(false)
-    setUser(null)
     localStorage.removeItem('mock_auth')
-    localStorage.removeItem('mock_user')
   }
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, user, login, logout }}>
+    <AuthContext.Provider value={{ isAuthenticated, login, logout }}>
       {children}
     </AuthContext.Provider>
   )
 }
-// -------------------------------
 
-// Simple Protected Route Component relies solely on isAuthenticated
+// Auth guard
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const { isAuthenticated } = useAuth()
   const location = useLocation()
@@ -79,7 +61,7 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   return <>{children}</>
 }
 
-// Redirect if already authenticated
+// Redirect authenticated
 const PublicRoute = ({ children }: { children: React.ReactNode }) => {
   const { isAuthenticated } = useAuth()
 
@@ -94,13 +76,13 @@ function App() {
       <AuthProvider>
         <BrowserRouter>
           <Routes>
-            {/* Public Routes with AuthLayout */}
+            {/* Public routes */}
             <Route element={<AuthLayout />}>
               <Route path="/sign-in" element={<PublicRoute><SignIn /></PublicRoute>} />
               <Route path="/sign-up" element={<PublicRoute><SignUp /></PublicRoute>} />
             </Route>
 
-            {/* Protected Dashboard Routes with PostLoginLayout */}
+            {/* Protected routes */}
             <Route path="/dashboard" element={
               <ProtectedRoute>
                 <PostLoginLayout />
@@ -115,7 +97,7 @@ function App() {
               <Route path="support" element={<Support />} />
             </Route>
 
-            {/* Fallback */}
+            {/* Catch-all */}
             <Route path="*" element={<Navigate to="/dashboard" replace />} />
           </Routes>
         </BrowserRouter>

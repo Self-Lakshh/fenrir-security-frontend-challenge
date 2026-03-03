@@ -11,62 +11,42 @@ class AuthService {
     }
 
     private initUsers() {
-        const storedUsers = localStorage.getItem(USERS_KEY);
-        if (storedUsers) {
-            this.users = JSON.parse(storedUsers);
-        } else {
-            this.users = [...initialUsers];
+        const stored = localStorage.getItem(USERS_KEY);
+        this.users = stored ? JSON.parse(stored) : [...initialUsers];
+        if (!stored) {
             localStorage.setItem(USERS_KEY, JSON.stringify(this.users));
         }
     }
 
     async login(email: string, password: string): Promise<{ success: boolean; message: string; user?: Omit<User, 'password'> }> {
-        // Simulate API delay
-        await new Promise((resolve) => setTimeout(resolve, 800));
+        await new Promise<void>((resolve) => setTimeout(resolve, 800));
 
         const user = this.users.find((u) => u.email.toLowerCase() === email.toLowerCase());
 
-        if (!user) {
-            return { success: false, message: 'User not found with this email.' };
-        }
+        if (!user) return { success: false, message: 'No account found with this email.' };
+        if (user.password !== password) return { success: false, message: 'Invalid password. Please try again.' };
 
-        if (user.password !== password) {
-            return { success: false, message: 'Invalid password. Please try again.' };
-        }
-
-        const { password: _, ...userWithoutPassword } = user;
-        return {
-            success: true,
-            message: 'Logged in successfully!',
-            user: userWithoutPassword,
-        };
+        const { password: _pw, ...safeUser } = user;
+        return { success: true, message: 'Logged in successfully!', user: safeUser };
     }
 
     async register(userData: Omit<User, 'id' | 'createdAt'>): Promise<{ success: boolean; message: string; user?: Omit<User, 'password'> }> {
-        // Simulate API delay
-        await new Promise((resolve) => setTimeout(resolve, 1000));
+        await new Promise<void>((resolve) => setTimeout(resolve, 1000));
 
-        const existingUser = this.users.find((u) => u.email.toLowerCase() === userData.email.toLowerCase());
-
-        if (existingUser) {
-            return { success: false, message: 'An account with this email already exists.' };
-        }
+        const exists = this.users.some((u) => u.email.toLowerCase() === userData.email.toLowerCase());
+        if (exists) return { success: false, message: 'An account with this email already exists.' };
 
         const newUser: User = {
             ...userData,
-            id: Math.random().toString(36).substr(2, 9),
+            id: Math.random().toString(36).substring(2, 11),
             createdAt: new Date().toISOString(),
         };
 
         this.users.push(newUser);
         localStorage.setItem(USERS_KEY, JSON.stringify(this.users));
 
-        const { password: _, ...userWithoutPassword } = newUser;
-        return {
-            success: true,
-            message: 'Account created successfully!',
-            user: userWithoutPassword,
-        };
+        const { password: _pw, ...safeUser } = newUser;
+        return { success: true, message: 'Account created successfully!', user: safeUser };
     }
 }
 

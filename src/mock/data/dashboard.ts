@@ -3,6 +3,7 @@ export interface DashboardStats {
     scheduled: number;
     rescans: number;
     failedScans: number;
+    lastScan: string;
     severity: {
         critical: number;
         high: number;
@@ -22,6 +23,7 @@ export const mockDashboardStats: DashboardStats = {
     scheduled: 1000,
     rescans: 100,
     failedScans: 100,
+    lastScan: '10 mins ago',
     severity: {
         critical: 86,
         high: 16,

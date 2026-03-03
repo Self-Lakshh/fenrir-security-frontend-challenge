@@ -3,9 +3,12 @@ export interface User {
     firstName: string;
     lastName: string;
     email: string;
-    password: string; // In a real app, this would be hashed
+    password: string;
+    position: string;
     createdAt: string;
 }
+
+const DEFAULT_MOCK_PASSWORD = 'password123';
 
 export const initialUsers: User[] = [
     {
@@ -13,7 +16,8 @@ export const initialUsers: User[] = [
         firstName: 'Demo',
         lastName: 'User',
         email: 'test@example.com',
-        password: 'password123',
+        password: DEFAULT_MOCK_PASSWORD,
+        position: 'Security Lead',
         createdAt: new Date().toISOString(),
     },
 ];

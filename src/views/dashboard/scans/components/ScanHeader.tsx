@@ -16,12 +16,12 @@ const ScanHeader = () => {
                 <span className="text-foreground font-bold">New Scan</span>
             </div>
 
-            <div className="flex items-center gap-3">
-                <button className="flex items-center gap-2 px-6 py-2.5 rounded-xl bg-card border border-border/50 text-sm font-bold hover:bg-secondary transition-all shadow-lg active:scale-95">
-                    <FileDown className="w-4 h-4" /> Export Report
+            <div className="flex items-center gap-2 sm:gap-3">
+                <button className="flex items-center gap-1.5 sm:gap-2 px-3 sm:px-6 py-2 sm:py-2.5 rounded-xl bg-card border border-border/50 text-xs sm:text-sm font-bold hover:bg-secondary transition-all shadow-lg active:scale-95">
+                    <FileDown className="w-3.5 h-3.5 sm:w-4 sm:h-4" /> Export Report
                 </button>
-                <button className="flex items-center gap-2 px-6 py-2.5 rounded-xl bg-red-500/10 border border-red-500/20 text-red-500 text-sm font-bold hover:bg-red-500/20 transition-all shadow-lg active:scale-95">
-                    <Square className="w-4 h-4 fill-current" /> Stop Scan
+                <button className="flex items-center gap-1.5 sm:gap-2 px-3 sm:px-6 py-2 sm:py-2.5 rounded-xl bg-red-500/10 border border-red-500/20 text-red-500 text-xs sm:text-sm font-bold hover:bg-red-500/20 transition-all shadow-lg active:scale-95">
+                    <Square className="w-3.5 h-3.5 sm:w-4 sm:h-4 fill-current" /> Stop Scan
                 </button>
             </div>
         </header>
