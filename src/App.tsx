@@ -14,9 +14,16 @@ import PostLoginLayout from '@/components/layouts/PostLoginLayout/index'
 import { ThemeProvider } from '@/components/theme'
 
 // --- Mock Auth Context Setup ---
+type AuthUser = {
+  firstName: string
+  lastName: string
+  email: string
+}
+
 type AuthContextType = {
   isAuthenticated: boolean
-  login: () => void
+  user: AuthUser | null
+  login: (user?: AuthUser) => void
   logout: () => void
 }
 
@@ -29,23 +36,33 @@ export const useAuth = () => {
 }
 
 const AuthProvider = ({ children }: { children: React.ReactNode }) => {
-  // Try to recover session from local storage, default to false.
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => {
     return localStorage.getItem('mock_auth') === 'true'
   })
 
-  const login = () => {
+  const [user, setUser] = useState<AuthUser | null>(() => {
+    const stored = localStorage.getItem('mock_user')
+    return stored ? JSON.parse(stored) : null
+  })
+
+  const login = (userData?: AuthUser) => {
     setIsAuthenticated(true)
     localStorage.setItem('mock_auth', 'true')
+    if (userData) {
+      setUser(userData)
+      localStorage.setItem('mock_user', JSON.stringify(userData))
+    }
   }
 
   const logout = () => {
     setIsAuthenticated(false)
+    setUser(null)
     localStorage.removeItem('mock_auth')
+    localStorage.removeItem('mock_user')
   }
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, login, logout }}>
+    <AuthContext.Provider value={{ isAuthenticated, user, login, logout }}>
       {children}
     </AuthContext.Provider>
   )
