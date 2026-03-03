@@ -12,7 +12,6 @@ import Support from '@/views/dashboard/support'
 import AuthLayout from '@/components/layouts/AuthLayout/index'
 import PostLoginLayout from '@/components/layouts/PostLoginLayout/index'
 import { ThemeProvider } from '@/components/theme'
-import './App.css'
 
 // --- Mock Auth Context Setup ---
 type AuthContextType = {
