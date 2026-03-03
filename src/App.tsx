@@ -77,6 +77,7 @@ function App() {
         <BrowserRouter>
           <Routes>
             {/* Public routes */}
+            <Route path="/" element={<Navigate to="/sign-in" replace />} />
             <Route element={<AuthLayout />}>
               <Route path="/sign-in" element={<PublicRoute><SignIn /></PublicRoute>} />
               <Route path="/sign-up" element={<PublicRoute><SignUp /></PublicRoute>} />
@@ -98,7 +99,7 @@ function App() {
             </Route>
 
             {/* Catch-all */}
-            <Route path="*" element={<Navigate to="/dashboard" replace />} />
+            <Route path="*" element={<Navigate to="/sign-in" replace />} />
           </Routes>
         </BrowserRouter>
       </AuthProvider>

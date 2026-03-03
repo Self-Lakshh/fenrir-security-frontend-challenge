@@ -74,15 +74,9 @@ const SeverityItem = ({ label, count, trend, icon: Icon, color, bg }: SeverityIt
   const isIncrease = trend.includes('increase')
 
   return (
-    <div className="flex items-start justify-between px-4 sm:px-6 py-4 sm:py-6">
+    <div className="flex items-start justify-between px-4 sm:px-6 py-4 sm:py-6 border-r border-border last:border-r-0">
       <div>
-        <div className="flex items-center gap-3 sm:gap-5 mb-3">
-          <span className="text-xs sm:text-sm font-medium capitalize text-muted-foreground">{label}</span>
-          <div className={`p-1.5 sm:p-2 rounded-md ${bg}`}>
-            <Icon className={`w-3.5 h-3.5 sm:w-4 sm:h-4 ${color}`} />
-          </div>
-        </div>
-
+        <span className="text-xs sm:text-sm font-medium capitalize text-muted-foreground block mb-3">{label}</span>
         <div className="flex items-center gap-2 sm:gap-3">
           <span className="text-2xl sm:text-3xl font-bold">{count}</span>
           <span className={`flex items-center text-xs font-medium ${isIncrease ? 'text-red-600' : 'text-green-600'}`}>
@@ -90,6 +84,11 @@ const SeverityItem = ({ label, count, trend, icon: Icon, color, bg }: SeverityIt
             {trend}
           </span>
         </div>
+      </div>
+
+      {/* Icon — flex end */}
+      <div className={`p-1.5 sm:p-2 rounded-md shrink-0 ${bg}`}>
+        <Icon className={`w-3.5 h-3.5 sm:w-4 sm:h-4 ${color}`} />
       </div>
     </div>
   )
