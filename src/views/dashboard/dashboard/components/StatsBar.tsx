@@ -72,16 +72,26 @@ const Divider = () => (
 
 const SeverityItem = ({ label, count, trend, icon: Icon, color, bg }: SeverityItemProps) => {
   const isIncrease = trend.includes('increase')
+  // Compact form for mobile — just the number e.g. "12%"
+  const trendShort = trend.split(' ')[0]
 
   return (
-    <div className="flex items-start justify-between px-4 sm:px-6 py-4 sm:py-6 border-r border-border last:border-r-0">
-      <div>
-        <span className="text-xs sm:text-sm font-medium capitalize text-muted-foreground block mb-3">{label}</span>
-        <div className="flex items-center gap-2 sm:gap-3">
-          <span className="text-2xl sm:text-3xl font-bold">{count}</span>
-          <span className={`flex items-center text-xs font-medium ${isIncrease ? 'text-red-600' : 'text-green-600'}`}>
-            {isIncrease ? <ArrowUpRight className="w-3 h-3" /> : <ArrowDownRight className="w-3 h-3" />}
-            {trend}
+    <div className="flex items-start justify-between px-3 sm:px-5 py-3 sm:py-4 min-w-0 overflow-hidden">
+
+      {/* Label + count + trend */}
+      <div className="min-w-0 flex-1 mr-2">
+        <span className="text-[11px] sm:text-sm font-medium capitalize text-muted-foreground block mb-2 sm:mb-3 truncate">
+          {label}
+        </span>
+        <div className="flex items-center gap-1.5 sm:gap-3">
+          <span className="text-xl sm:text-2xl lg:text-3xl font-bold">{count}</span>
+          <span className={`flex items-center gap-0.5 text-[10px] sm:text-xs font-medium ${isIncrease ? 'text-red-600' : 'text-green-600'}`}>
+            {isIncrease
+              ? <ArrowUpRight className="w-3 h-3 shrink-0" />
+              : <ArrowDownRight className="w-3 h-3 shrink-0" />
+            }
+            <span className="hidden sm:inline">{trend}</span>
+            <span className="sm:hidden">{trendShort}</span>
           </span>
         </div>
       </div>
@@ -90,6 +100,7 @@ const SeverityItem = ({ label, count, trend, icon: Icon, color, bg }: SeverityIt
       <div className={`p-1.5 sm:p-2 rounded-md shrink-0 ${bg}`}>
         <Icon className={`w-3.5 h-3.5 sm:w-4 sm:h-4 ${color}`} />
       </div>
+
     </div>
   )
 }
