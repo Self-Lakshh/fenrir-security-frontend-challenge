@@ -23,8 +23,8 @@ const SignIn = () => {
 
     try {
       const result = await authService.login(email, password)
-      if (result.success) {
-        login()
+      if (result.success && result.user) {
+        login(result.user)
         navigate(location.state?.from?.pathname || '/dashboard', { replace: true })
       } else {
         setError(result.message)

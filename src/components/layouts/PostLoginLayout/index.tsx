@@ -26,11 +26,7 @@ import {
     DropdownMenuGroup,
     DropdownMenuItem,
     DropdownMenuLabel,
-    DropdownMenuPortal,
     DropdownMenuSeparator,
-    DropdownMenuSub,
-    DropdownMenuSubContent,
-    DropdownMenuSubTrigger,
     DropdownMenuTrigger,
 } from "@/components/shadcn/dropdown-menu"
 import { useTheme } from "@/components/theme"
@@ -58,8 +54,10 @@ const buildBreadcrumbs = (pathname: string) => {
 interface SidebarProps {
     pathname: string
     avatarUrl: string
+    initials: string
     displayName: string
     displayEmail: string
+    displayPosition: string
     theme: string
     setTheme: (t: "light" | "dark" | "system") => void
     onLogout: () => void
@@ -70,13 +68,16 @@ interface SidebarProps {
 const SidebarContent = ({
     pathname,
     avatarUrl,
+    initials,
     displayName,
     displayEmail,
+    displayPosition,
     theme,
     setTheme,
     onLogout,
     onNavClick,
 }: SidebarProps) => {
+    const [imgError, setImgError] = useState(false)
     const active = (path: string) =>
         path === "/dashboard"
             ? pathname === "/dashboard"
@@ -104,8 +105,8 @@ const SidebarContent = ({
                             to={item.path}
                             onClick={onNavClick}
                             className={`flex items-center gap-3 px-4 py-2.5 text-sm font-semibold transition-all duration-200 rounded-full ${active(item.path)
-                                    ? "bg-emerald-300/30 text-primary"
-                                    : "text-muted-foreground hover:bg-secondary hover:text-foreground"
+                                ? "bg-emerald-300/30 text-primary"
+                                : "text-muted-foreground hover:bg-secondary hover:text-foreground"
                                 }`}
                         >
                             <item.icon className={`w-[18px] h-[18px] ${active(item.path) ? "text-primary" : ""}`} />
@@ -123,8 +124,8 @@ const SidebarContent = ({
                             to={item.path}
                             onClick={onNavClick}
                             className={`flex items-center gap-3 px-4 py-2.5 text-sm font-semibold transition-all duration-200 rounded-full ${active(item.path)
-                                    ? "bg-emerald-300/30 text-primary"
-                                    : "text-muted-foreground hover:bg-secondary hover:text-foreground"
+                                ? "bg-emerald-300/30 text-primary"
+                                : "text-muted-foreground hover:bg-secondary hover:text-foreground"
                                 }`}
                         >
                             <item.icon className={`w-[18px] h-[18px] ${active(item.path) ? "text-primary" : ""}`} />
@@ -138,10 +139,22 @@ const SidebarContent = ({
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                             <button className="w-full flex items-center gap-3 px-3 py-2.5 rounded-full hover:bg-secondary transition">
-                                <img src={avatarUrl} alt={displayName} className="w-9 h-9 rounded-full border border-border" />
+                                {/* Avatar with initials fallback */}
+                                {!imgError ? (
+                                    <img
+                                        src={avatarUrl}
+                                        alt={displayName}
+                                        className="w-9 h-9 rounded-full border border-border shrink-0"
+                                        onError={() => setImgError(true)}
+                                    />
+                                ) : (
+                                    <div className="w-9 h-9 rounded-full bg-primary flex items-center justify-center text-white text-sm font-bold shrink-0">
+                                        {initials}
+                                    </div>
+                                )}
                                 <div className="flex-1 text-left min-w-0">
                                     <p className="text-sm font-semibold truncate">{displayEmail}</p>
-                                    <p className="text-xs text-muted-foreground">Security Lead</p>
+                                    <p className="text-xs text-muted-foreground">{displayPosition}</p>
                                 </div>
                                 <ChevronRight className="w-4 h-4 text-muted-foreground" />
                             </button>
@@ -158,26 +171,18 @@ const SidebarContent = ({
                             <DropdownMenuSeparator />
 
                             <DropdownMenuGroup>
-                                <DropdownMenuSub>
-                                    <DropdownMenuSubTrigger>
-                                        {theme === "light" ? (
-                                            <Sun className="mr-2 h-4 w-4" />
-                                        ) : theme === "dark" ? (
-                                            <Moon className="mr-2 h-4 w-4" />
-                                        ) : (
-                                            <Monitor className="mr-2 h-4 w-4" />
-                                        )}
-                                        Theme
-                                    </DropdownMenuSubTrigger>
-
-                                    <DropdownMenuPortal>
-                                        <DropdownMenuSubContent>
-                                            <DropdownMenuItem onClick={() => setTheme("light")}>Light</DropdownMenuItem>
-                                            <DropdownMenuItem onClick={() => setTheme("dark")}>Dark</DropdownMenuItem>
-                                            <DropdownMenuItem onClick={() => setTheme("system")}>System</DropdownMenuItem>
-                                        </DropdownMenuSubContent>
-                                    </DropdownMenuPortal>
-                                </DropdownMenuSub>
+                                <DropdownMenuItem onClick={() => setTheme("light")}>
+                                    <Sun className="mr-2 h-4 w-4" />
+                                    Light {theme === "light" && <span className="ml-auto text-primary">✓</span>}
+                                </DropdownMenuItem>
+                                <DropdownMenuItem onClick={() => setTheme("dark")}>
+                                    <Moon className="mr-2 h-4 w-4" />
+                                    Dark {theme === "dark" && <span className="ml-auto text-primary">✓</span>}
+                                </DropdownMenuItem>
+                                <DropdownMenuItem onClick={() => setTheme("system")}>
+                                    <Monitor className="mr-2 h-4 w-4" />
+                                    System {theme === "system" && <span className="ml-auto text-primary">✓</span>}
+                                </DropdownMenuItem>
 
                                 <DropdownMenuItem onClick={() => { }}>
                                     <Settings className="mr-2 h-4 w-4" />
@@ -200,7 +205,7 @@ const SidebarContent = ({
 }
 
 const PostLoginLayout = () => {
-    const { logout } = useAuth()
+    const { logout, user } = useAuth()
     const { theme, setTheme } = useTheme()
     const navigate = useNavigate()
     const location = useLocation()
@@ -215,17 +220,21 @@ const PostLoginLayout = () => {
 
     const breadcrumbs = buildBreadcrumbs(location.pathname)
 
-    const displayName = "User"
-    const displayEmail = "user@example.com"
+    const displayName = user ? `${user.firstName} ${user.lastName}` : "User"
+    const displayEmail = user?.email ?? "user@example.com"
+    const displayPosition = user?.position ?? "Security Lead"
+    const initials = user
+        ? `${user.firstName[0]}${user.lastName[0]}`.toUpperCase()
+        : "U"
+    const avatarUrl = `https://api.dicebear.com/7.x/adventurer/png?seed=${encodeURIComponent(displayName)}&size=128&backgroundColor=facc15`
 
-    const avatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(displayName)}&background=0CC8A8&color=ffffff&bold=true&size=128`
-
-    // Shared props for both sidebar instances
     const sidebarProps: SidebarProps = {
         pathname: location.pathname,
         avatarUrl,
+        initials,
         displayName,
         displayEmail,
+        displayPosition,
         theme,
         setTheme,
         onLogout: handleLogout,
@@ -274,8 +283,8 @@ const PostLoginLayout = () => {
                         <Link
                             to="/dashboard"
                             className={`px-3 py-2 transition-colors ${location.pathname === "/dashboard"
-                                    ? "text-primary"
-                                    : "text-muted-foreground hover:text-foreground"
+                                ? "text-primary"
+                                : "text-muted-foreground hover:text-foreground"
                                 }`}
                         >
                             <Home className="w-4 h-4" />

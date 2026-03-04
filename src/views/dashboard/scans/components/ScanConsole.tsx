@@ -1,4 +1,5 @@
-import { Settings2, ChevronDown, X } from 'lucide-react';
+import { Settings2, ChevronDown, X } from 'lucide-react'
+import FindingLog from './FindingLog'
 
 const logs = [
     { time: '[09:00:00]', text: "I'll begin a systematic penetration test on helpdesk.democorp.com. Let me start with reconnaissance and enumeration." },
@@ -13,15 +14,15 @@ const logs = [
 
 const ScanConsole = () => {
     return (
-        <div className="bg-card/30 backdrop-blur-xl rounded-2xl sm:rounded-[40px] border border-border/10 overflow-hidden shadow-2xl h-[480px] sm:h-[560px] lg:h-[600px] flex flex-col">
+        <div className="bg-card border border-border rounded-xl overflow-hidden flex flex-col">
 
-            {/* Console header */}
-            <div className="px-4 sm:px-6 py-4 border-b border-border/10 flex items-center justify-between">
+            {/* Header — bg-background */}
+            <div className="bg-background px-4 sm:px-6 py-3 border-b border-border flex items-center justify-between shrink-0">
                 <div className="flex items-center gap-2 sm:gap-3">
-                    <div className="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-primary animate-pulse" />
-                    <span className="font-bold text-xs sm:text-sm">Live Scan Console</span>
-                    <span className="px-2 py-0.5 rounded bg-secondary/50 text-[9px] sm:text-[10px] font-bold text-muted-foreground flex items-center gap-1">
-                        <Settings2 className="w-2.5 h-2.5 sm:w-3 sm:h-3" /> Running...
+                    <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
+                    <span className="font-semibold text-sm">Live Scan Console</span>
+                    <span className="text-[10px] text-muted-foreground flex items-center gap-1 bg-secondary px-2.5 py-0.5 rounded-full">
+                        <Settings2 className="w-3 h-3" /> Running...
                     </span>
                 </div>
                 <div className="flex items-center gap-2 text-muted-foreground">
@@ -30,57 +31,57 @@ const ScanConsole = () => {
                 </div>
             </div>
 
-            {/* Tabs */}
-            <div className="flex border-b border-border/10 overflow-x-auto no-scrollbar">
-                <button className="px-4 sm:px-8 py-3 text-xs sm:text-sm font-bold border-b-2 border-primary text-primary bg-primary/5 whitespace-nowrap">Activity Log</button>
-                <button className="px-4 sm:px-8 py-3 text-xs sm:text-sm font-bold text-muted-foreground hover:text-foreground transition-all whitespace-nowrap">Verification Loops</button>
-            </div>
+            {/* Body: Activity (bg-card) | Finding Log (bg-background) */}
+            <div className="flex flex-col xl:flex-row flex-1 min-h-0">
 
-            {/* Log output */}
-            <div className="flex-1 px-4 sm:px-8 py-4 sm:py-6 overflow-y-auto no-scrollbar font-mono text-[11px] sm:text-[13px] leading-relaxed">
-                {logs.map((log, i) => (
-                    <div key={i} className="mb-4 sm:mb-6 animate-in fade-in slide-in-from-left-2 duration-500" style={{ animationDelay: `${i * 100}ms` }}>
-                        <div className="flex gap-2 sm:gap-4">
-                            {log.time && <span className="text-muted-foreground shrink-0">{log.time}</span>}
-                            <div className="text-foreground/90 min-w-0 break-words">
-                                {log.text.split(/(\*\*.*?\*\*|'.*?'|#|\/api|test:test)/).map((part, idx) => {
-                                    if (part.startsWith('**') && part.endsWith('**'))
-                                        return <span key={idx} className="text-red-500 font-bold">{part.slice(2, -2)}</span>
-                                    if (part.startsWith("'") && part.endsWith("'"))
-                                        return <span key={idx} className="bg-primary/10 text-primary px-1 rounded">{part}</span>
-                                    if (part === 'test:test' || part === 'X-UserId: 10032')
-                                        return <span key={idx} className="text-teal-400 font-bold">{part}</span>
-                                    if (part === '/api' || part === '/password/test')
-                                        return <span key={idx} className="bg-secondary/50 px-1 rounded font-bold">{part}</span>
-                                    return part
-                                })}
-                            </div>
-                        </div>
-                        {log.child && (
-                            <div className="ml-8 sm:ml-16 mt-2 text-muted-foreground/60 flex gap-3 sm:gap-4">
-                                <span>|</span>
-                                <span className="break-words">{log.child}</span>
-                            </div>
-                        )}
+                {/* Left — Activity Log (bg-card) */}
+                <div className="flex-1 flex flex-col bg-card border-b xl:border-b-0 xl:border-r border-border min-h-0">
+
+                    <div className="flex border-b border-border shrink-0">
+                        <button className="relative px-4 sm:px-6 py-3 text-xs sm:text-sm font-semibold text-primary">
+                            Activity Log
+                            <span className="absolute bottom-0 left-3 right-3 h-0.5 bg-primary rounded-full" />
+                        </button>
+                        <button className="px-4 sm:px-6 py-3 text-xs sm:text-sm font-semibold text-muted-foreground hover:text-foreground transition">Verification Loops</button>
                     </div>
-                ))}
+
+                    {/* Log output */}
+                    <div className="flex-1 overflow-y-auto px-4 sm:px-6 py-4 font-mono text-[11px] sm:text-[13px] leading-relaxed min-h-[300px] max-h-[480px] xl:max-h-none">
+                        {logs.map((log, i) => (
+                            <div key={i} className="mb-4">
+                                <div className="flex gap-2 sm:gap-4">
+                                    {log.time && <span className="text-muted-foreground shrink-0">{log.time}</span>}
+                                    <div className="text-foreground/90 min-w-0 break-words">
+                                        {log.text.split(/(\*\*.*?\*\*|'.*?'|#|\/api|test:test)/).map((part, idx) => {
+                                            if (part.startsWith('**') && part.endsWith('**'))
+                                                return <span key={idx} className="text-red-500 font-bold">{part.slice(2, -2)}</span>
+                                            if (part.startsWith("'") && part.endsWith("'"))
+                                                return <span key={idx} className="bg-primary/10 text-primary px-1 rounded">{part}</span>
+                                            if (part === 'test:test' || part === 'X-UserId: 10032')
+                                                return <span key={idx} className="text-teal-400 font-bold">{part}</span>
+                                            if (part === '/api' || part === '/password/test')
+                                                return <span key={idx} className="bg-secondary/50 px-1 rounded font-bold">{part}</span>
+                                            return part
+                                        })}
+                                    </div>
+                                </div>
+                                {log.child && (
+                                    <div className="ml-8 sm:ml-16 mt-1 text-muted-foreground/60 flex gap-3">
+                                        <span>|</span>
+                                        <span className="break-words">{log.child}</span>
+                                    </div>
+                                )}
+                            </div>
+                        ))}
+                    </div>
+                </div>
+
+                {/* Right — Finding Log (bg-background, cards are bg-card) */}
+                <div className="xl:w-[360px] bg-background flex flex-col">
+                    <FindingLog />
+                </div>
             </div>
 
-            {/* Status footer */}
-            <div className="px-4 sm:px-8 py-3 sm:py-4 bg-secondary/20 border-t border-border/10 flex flex-wrap gap-3 sm:gap-8 text-[9px] sm:text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
-                <div className="flex items-center gap-1.5 sm:gap-2">
-                    <div className="w-1.5 h-1.5 rounded-full bg-muted-foreground" />
-                    Sub-Agents: 0
-                </div>
-                <div className="flex items-center gap-1.5 sm:gap-2">
-                    <div className="w-1.5 h-1.5 rounded-full bg-muted-foreground" />
-                    Parallel: 2
-                </div>
-                <div className="flex items-center gap-1.5 sm:gap-2">
-                    <div className="w-1.5 h-1.5 rounded-full bg-muted-foreground" />
-                    Operations: 1
-                </div>
-            </div>
         </div>
     )
 }

@@ -1,10 +1,8 @@
 import { useEffect, useState } from 'react'
 import { scanService } from '@/mock/services/scanService'
 import type { Scan } from '@/mock/data/scans'
-import ScanHeader from './components/ScanHeader'
 import ScanOverview from './components/ScanOverview'
 import ScanConsole from './components/ScanConsole'
-import FindingLog from './components/FindingLog'
 
 const Scans = () => {
     const [scan, setScan] = useState<Scan | null>(null)
@@ -28,18 +26,29 @@ const Scans = () => {
     if (!scan) return <div>Scan not found</div>
 
     return (
-        <div className="max-w-[1600px] mx-auto p-4 sm:p-6 lg:p-8">
-            <ScanHeader />
-            <ScanOverview scan={scan} />
+        <div className="flex flex-col min-h-[calc(100vh-56px)]">
 
-            <div className="grid grid-cols-1 xl:grid-cols-12 gap-5 sm:gap-8 items-start">
-                <div className="xl:col-span-8">
-                    <ScanConsole />
+            {/* Main content */}
+            <div className="flex-1 max-w-[1600px] w-full mx-auto p-3 sm:p-4 lg:p-5">
+                <ScanOverview scan={scan} />
+                <ScanConsole />
+            </div>
+
+            {/* Sticky page footer */}
+            <div className="sticky bottom-0 z-10 bg-background border-t border-border px-4 sm:px-8 py-2.5 flex flex-wrap items-center justify-between gap-2 text-[10px] text-muted-foreground">
+                <div className="flex items-center gap-4 sm:gap-6">
+                    <span className="flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full bg-muted-foreground inline-block" />Sub-Agents: 0</span>
+                    <span className="flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full bg-muted-foreground inline-block" />Parallel Executions: 2</span>
+                    <span className="flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full bg-muted-foreground inline-block" />Operations: 1</span>
                 </div>
-                <div className="xl:col-span-4">
-                    <FindingLog />
+                <div className="flex items-center gap-3 sm:gap-4 font-semibold">
+                    <span className="text-red-500">Critical: 0</span>
+                    <span className="text-orange-500">High: 0</span>
+                    <span className="text-yellow-500">Medium: 0</span>
+                    <span className="text-green-500">Low: 0</span>
                 </div>
             </div>
+
         </div>
     )
 }

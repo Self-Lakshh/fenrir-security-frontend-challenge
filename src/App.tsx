@@ -14,9 +14,17 @@ import PostLoginLayout from '@/components/layouts/PostLoginLayout/index'
 import { ThemeProvider } from '@/components/theme'
 
 // Mock auth context
+export interface AuthUser {
+  firstName: string
+  lastName: string
+  email: string
+  position: string
+}
+
 type AuthContextType = {
   isAuthenticated: boolean
-  login: () => void
+  user: AuthUser | null
+  login: (user: AuthUser) => void
   logout: () => void
 }
 
@@ -34,18 +42,28 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     return localStorage.getItem('mock_auth') === 'true'
   })
 
-  const login = () => {
+  // User persistence
+  const [user, setUser] = useState<AuthUser | null>(() => {
+    const stored = localStorage.getItem('mock_user')
+    return stored ? JSON.parse(stored) : null
+  })
+
+  const login = (userData: AuthUser) => {
     setIsAuthenticated(true)
+    setUser(userData)
     localStorage.setItem('mock_auth', 'true')
+    localStorage.setItem('mock_user', JSON.stringify(userData))
   }
 
   const logout = () => {
     setIsAuthenticated(false)
+    setUser(null)
     localStorage.removeItem('mock_auth')
+    localStorage.removeItem('mock_user')
   }
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, login, logout }}>
+    <AuthContext.Provider value={{ isAuthenticated, user, login, logout }}>
       {children}
     </AuthContext.Provider>
   )
