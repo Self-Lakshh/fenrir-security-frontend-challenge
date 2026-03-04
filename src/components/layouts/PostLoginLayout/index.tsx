@@ -78,6 +78,7 @@ const SidebarContent = ({
     onNavClick,
 }: SidebarProps) => {
     const [imgError, setImgError] = useState(false)
+    const navigate = useNavigate()
     const active = (path: string) =>
         path === "/dashboard"
             ? pathname === "/dashboard"
@@ -171,20 +172,31 @@ const SidebarContent = ({
                             <DropdownMenuSeparator />
 
                             <DropdownMenuGroup>
-                                <DropdownMenuItem onClick={() => setTheme("light")}>
-                                    <Sun className="mr-2 h-4 w-4" />
-                                    Light {theme === "light" && <span className="ml-auto text-primary">✓</span>}
-                                </DropdownMenuItem>
-                                <DropdownMenuItem onClick={() => setTheme("dark")}>
-                                    <Moon className="mr-2 h-4 w-4" />
-                                    Dark {theme === "dark" && <span className="ml-auto text-primary">✓</span>}
-                                </DropdownMenuItem>
-                                <DropdownMenuItem onClick={() => setTheme("system")}>
-                                    <Monitor className="mr-2 h-4 w-4" />
-                                    System {theme === "system" && <span className="ml-auto text-primary">✓</span>}
-                                </DropdownMenuItem>
+                                {/* Theme segmented control */}
+                                <div className="px-2 py-2">
+                                    <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider mb-2 px-1">Theme</p>
+                                    <div className="flex bg-secondary rounded-lg p-0.5 gap-0.5">
+                                        {([
+                                            { value: 'light', Icon: Sun, label: 'Light' },
+                                            { value: 'dark', Icon: Moon, label: 'Dark' },
+                                            { value: 'system', Icon: Monitor, label: 'System' },
+                                        ] as const).map(({ value, Icon, label }) => (
+                                            <button
+                                                key={value}
+                                                onClick={(e) => { e.stopPropagation(); setTheme(value) }}
+                                                className={`flex-1 flex items-center justify-center gap-1 py-1.5 rounded-md text-[11px] font-semibold transition-all ${theme === value
+                                                    ? 'bg-background text-foreground shadow-sm'
+                                                    : 'text-muted-foreground hover:text-foreground'
+                                                    }`}
+                                            >
+                                                <Icon className="w-3 h-3 shrink-0" />
+                                                {label}
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
 
-                                <DropdownMenuItem onClick={() => { }}>
+                                <DropdownMenuItem onClick={() => { navigate('/dashboard/settings'); onNavClick?.() }}>
                                     <Settings className="mr-2 h-4 w-4" />
                                     Settings
                                 </DropdownMenuItem>
@@ -192,7 +204,7 @@ const SidebarContent = ({
 
                             <DropdownMenuSeparator />
 
-                            <DropdownMenuItem onClick={onLogout} className="text-red-500 focus:text-red-500">
+                            <DropdownMenuItem onClick={onLogout} className="text-red-600 focus:text-red-600 focus:bg-red-500/10">
                                 <LogOut className="mr-2 h-4 w-4" />
                                 Sign out
                             </DropdownMenuItem>
