@@ -23,8 +23,8 @@ const AuthLayout = () => {
 
           <Content />
 
-          <section className="w-full lg:w-[45%] flex items-center justify-center lg:items-stretch">
-            <div className="w-full max-w-[460px] flex">
+          <section className="w-full lg:w-[45%] flex items-center justify-center">
+            <div className="w-full max-w-[460px]">
               <Outlet />
             </div>
           </section>
