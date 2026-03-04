@@ -30,10 +30,10 @@ const SignUp = () => {
     try {
       const result = await authService.register({ firstName, lastName, email, password, position: 'Security Analyst' })
 
-      if (result.success) {
+      if (result.success && result.user) {
         setSuccess(result.message)
         setTimeout(() => {
-          login()
+          login(result.user!)
           navigate('/dashboard', { replace: true })
         }, 1200)
       } else {
